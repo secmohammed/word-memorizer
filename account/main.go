@@ -10,14 +10,17 @@ import (
     "time"
 
     "github.com/gin-gonic/gin"
+    "github.secom/secmohammed/word-memorizer/handler"
 )
 
 func main() {
     // you could insert your favorite logger here for structured or leveled logging
     log.Println("Starting server...")
-
+    gin.SetMode(gin.ReleaseMode)
     router := gin.Default()
-
+    handler.NewHandler(&handler.Config{
+        R: router,
+    })
     router.GET("/api/account", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{
             "hello": "dddd",
