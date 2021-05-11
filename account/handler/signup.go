@@ -2,6 +2,7 @@ package handler
 
 import (
     "log"
+    "net/http"
 
     "github.com/gin-gonic/gin"
     "github.com/secmohammed/word-memorizer/account/errors"
@@ -29,4 +30,14 @@ func (h *Handler) Signup(c *gin.Context) {
         c.JSON(errors.Status(err), gin.H{"error": err})
         return
     }
+    tokens, err := h.TokenService.NewPairFromUser(c, u, "")
+    if err != nil {
+        c.JSON(errors.Status(err), gin.H{
+            "error": err,
+        })
+        return
+    }
+    c.JSON(http.StatusCreated, gin.H{
+        "tokens": tokens,
+    })
 }

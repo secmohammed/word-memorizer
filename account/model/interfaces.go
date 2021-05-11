@@ -13,6 +13,12 @@ type UserService interface {
     Signup(ctx context.Context, u *User) error
 }
 
+//TokenService defines methods the handler layer expects
+//any service it interacts with to implement
+type TokenService interface {
+    NewPairFromUser(ctx context.Context, u *User, prevTokenID string) (*TokenPair, error)
+}
+
 //UserRepository defines methodds the service lay expects
 //any repository it interacts with to implement
 type UserRepository interface {

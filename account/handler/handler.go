@@ -9,17 +9,20 @@ import (
 )
 
 type Handler struct {
-    UserService model.UserService
+    UserService  model.UserService
+    TokenService model.TokenService
 }
 
 type Config struct {
-    R           *gin.Engine
-    UserService model.UserService
+    R            *gin.Engine
+    UserService  model.UserService
+    TokenService model.TokenService
 }
 
 func NewHandler(c *Config) {
     h := &Handler{
-        UserService: c.UserService,
+        UserService:  c.UserService,
+        TokenService: c.TokenService,
     }
 
     g := c.R.Group(os.Getenv("ACCOUNT_API_URL"))
@@ -39,11 +42,6 @@ func (h *Handler) Signin(c *gin.Context) {
     })
 }
 func (h *Handler) Signout(c *gin.Context) {
-    c.JSON(http.StatusOK, gin.H{
-        "hello": "spacce persons",
-    })
-}
-func (h *Handler) Tokens(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "hello": "spacce persons",
     })
