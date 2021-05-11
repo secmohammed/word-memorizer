@@ -5,7 +5,7 @@ import (
     "os"
 
     "github.com/gin-gonic/gin"
-    "github.secom/secmohammed/word-memorizer/model"
+    "github.com/secmohammed/word-memorizer/model"
 )
 
 type Handler struct {

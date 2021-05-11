@@ -10,7 +10,7 @@ import (
     "time"
 
     "github.com/gin-gonic/gin"
-    "github.secom/secmohammed/word-memorizer/handler"
+    "github.com/secmohammed/word-memorizer/handler"
 )
 
 func main() {

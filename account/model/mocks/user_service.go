@@ -4,8 +4,8 @@ import (
     "context"
 
     "github.com/google/uuid"
+    "github.com/secmohammed/word-memorizer/model"
     "github.com/stretchr/testify/mock"
-    "github.secom/secmohammed/word-memorizer/model"
 )
 
 // MockUserService is a mock type for model.UserService
