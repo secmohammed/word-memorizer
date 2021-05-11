@@ -5,6 +5,7 @@ import (
 
     "github.com/google/uuid"
     "github.com/secmohammed/word-memorizer/account/model"
+    "github.com/secmohammed/word-memorizer/account/utils"
 )
 
 type UserService struct {
@@ -21,7 +22,15 @@ func NewUserService(c *UserServiceConfig) model.UserService {
 }
 
 func (s *UserService) Signup(ctx context.Context, u *model.User) error {
-    panic("Method not implemented")
+    password, err := utils.HashPassword(u.Password)
+    if err != nil {
+        return err
+    }
+    u.Password = password
+    if err := s.UserRepository.Create(ctx, u); err != nil {
+        return err
+    }
+    return nil
 }
 
 func (s *UserService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
