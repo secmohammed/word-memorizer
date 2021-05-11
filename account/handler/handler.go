@@ -5,7 +5,7 @@ import (
     "os"
 
     "github.com/gin-gonic/gin"
-    "github.com/secmohammed/word-memorizer/model"
+    "github.com/secmohammed/word-memorizer/account/model"
 )
 
 type Handler struct {
@@ -33,11 +33,6 @@ func NewHandler(c *Config) {
     g.PUT("/details", h.Details)
 }
 
-func (h *Handler) Signup(c *gin.Context) {
-    c.JSON(http.StatusOK, gin.H{
-        "hello": "spacce persons",
-    })
-}
 func (h *Handler) Signin(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "hello": "spacce persons",

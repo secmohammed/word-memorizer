@@ -7,9 +7,9 @@ import (
     "net/http/httptest"
     "testing"
 
-    "github.com/secmohammed/word-memorizer/errors"
-    "github.com/secmohammed/word-memorizer/model"
-    "github.com/secmohammed/word-memorizer/model/mocks"
+    "github.com/secmohammed/word-memorizer/account/errors"
+    "github.com/secmohammed/word-memorizer/account/model"
+    "github.com/secmohammed/word-memorizer/account/model/mocks"
     "github.com/stretchr/testify/mock"
 
     "github.com/gin-gonic/gin"

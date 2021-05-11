@@ -5,8 +5,8 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
-    "github.com/secmohammed/word-memorizer/errors"
-    "github.com/secmohammed/word-memorizer/model"
+    "github.com/secmohammed/word-memorizer/account/errors"
+    "github.com/secmohammed/word-memorizer/account/model"
 )
 
 type authHeader struct {

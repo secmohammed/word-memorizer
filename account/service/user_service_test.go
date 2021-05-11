@@ -7,8 +7,8 @@ import (
 
     "github.com/gin-gonic/gin"
     "github.com/google/uuid"
-    "github.com/secmohammed/word-memorizer/model"
-    "github.com/secmohammed/word-memorizer/model/mocks"
+    "github.com/secmohammed/word-memorizer/account/model"
+    "github.com/secmohammed/word-memorizer/account/model/mocks"
     "github.com/stretchr/testify/mock"
 
     "github.com/stretchr/testify/assert"

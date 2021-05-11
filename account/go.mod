@@ -1,4 +1,4 @@
-module github.com/secmohammed/word-memorizer
+module github.com/secmohammed/word-memorizer/account
 
 go 1.16
 
