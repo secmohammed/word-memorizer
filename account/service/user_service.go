@@ -8,20 +8,23 @@ import (
     "github.com/secmohammed/word-memorizer/account/utils"
 )
 
-type UserService struct {
+// userService acts as a struct for injecting an implementation of UserRepository
+// for use in service methods
+type userService struct {
     UserRepository model.UserRepository
 }
+
 type UserServiceConfig struct {
     UserRepository model.UserRepository
 }
 
 func NewUserService(c *UserServiceConfig) model.UserService {
-    return &UserService{
+    return &userService{
         UserRepository: c.UserRepository,
     }
 }
 
-func (s *UserService) Signup(ctx context.Context, u *model.User) error {
+func (s *userService) Signup(ctx context.Context, u *model.User) error {
     password, err := utils.HashPassword(u.Password)
     if err != nil {
         return err
@@ -33,7 +36,7 @@ func (s *UserService) Signup(ctx context.Context, u *model.User) error {
     return nil
 }
 
-func (s *UserService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
+func (s *userService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
     u, err := s.UserRepository.FindByID(ctx, uid)
 
     return u, err

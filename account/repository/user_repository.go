@@ -12,16 +12,16 @@ import (
     "github.com/secmohammed/word-memorizer/account/model"
 )
 
-type UserRepository struct {
+type userRepository struct {
     DB *sqlx.DB
 }
 
 func NewUserRepository(db *sqlx.DB) model.UserRepository {
-    return &UserRepository{
+    return &userRepository{
         DB: db,
     }
 }
-func (ur *UserRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.User, error) {
+func (ur *userRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.User, error) {
     user := &model.User{}
 
     query := "SELECT * FROM users WHERE uid=$1"
@@ -33,9 +33,9 @@ func (ur *UserRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.U
 
     return user, nil
 }
-func (ur *UserRepository) Create(ctx context.Context, u *model.User) error {
+func (ur *userRepository) Create(ctx context.Context, u *model.User) error {
     query := "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *"
-    if err := ur.DB.Get(u, query, u.Email, u.Password); err != nil {
+    if err := ur.DB.GetContext(ctx, u, query, u.Email, u.Password); err != nil {
         if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
             log.Printf("Couldn't create a user with email: %v. Reason: %v\n", u.Email, err.Code.Name())
             return errors.NewConflict("email", u.Email)

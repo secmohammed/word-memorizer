@@ -20,10 +20,11 @@ import (
 func TestSignup(t *testing.T) {
     // Setup
     gin.SetMode(gin.TestMode)
+
     t.Run("Email and Password Required", func(t *testing.T) {
         // We just want this to show that it's not called in this case
         mockUserService := new(mocks.MockUserService)
-        mockUserService.On("Signup", mock.AnythingOfType("*gin.Context"), mock.AnythingOfType("*model.User")).Return(nil)
+        mockUserService.On("Signup", mock.AnythingOfType("*context.emptyCtx"), mock.AnythingOfType("*model.User")).Return(nil)
 
         // a response recorder for getting written http response
         rr := httptest.NewRecorder()
@@ -53,10 +54,11 @@ func TestSignup(t *testing.T) {
         assert.Equal(t, 400, rr.Code)
         mockUserService.AssertNotCalled(t, "Signup")
     })
-    t.Run("Invalid Email", func(t *testing.T) {
+
+    t.Run("Invalid email", func(t *testing.T) {
         // We just want this to show that it's not called in this case
         mockUserService := new(mocks.MockUserService)
-        mockUserService.On("Signup", mock.AnythingOfType("*gin.Context"), mock.AnythingOfType("*model.User")).Return(nil)
+        mockUserService.On("Signup", mock.AnythingOfType("*context.emptyCtx"), mock.AnythingOfType("*model.User")).Return(nil)
 
         // a response recorder for getting written http response
         rr := httptest.NewRecorder()
@@ -71,8 +73,8 @@ func TestSignup(t *testing.T) {
 
         // create a request body with empty email and password
         reqBody, err := json.Marshal(gin.H{
-            "email":    "mohammedosama",
-            "password": "superpassword@123",
+            "email":    "bob@bob",
+            "password": "supersecret1234",
         })
         assert.NoError(t, err)
 
@@ -87,6 +89,7 @@ func TestSignup(t *testing.T) {
         assert.Equal(t, 400, rr.Code)
         mockUserService.AssertNotCalled(t, "Signup")
     })
+
     t.Run("Password too short", func(t *testing.T) {
         // We just want this to show that it's not called in this case
         mockUserService := new(mocks.MockUserService)
@@ -105,8 +108,8 @@ func TestSignup(t *testing.T) {
 
         // create a request body with empty email and password
         reqBody, err := json.Marshal(gin.H{
-            "email":    "mohammedosama@ieee.org",
-            "password": "super",
+            "email":    "bob@bob.com",
+            "password": "supe",
         })
         assert.NoError(t, err)
 
@@ -139,8 +142,8 @@ func TestSignup(t *testing.T) {
 
         // create a request body with empty email and password
         reqBody, err := json.Marshal(gin.H{
-            "email":    "mohammedosama@ieee.org",
-            "password": "superodnsaondansodasuperodnsaondansodasuperodnsaondansodasuperodnsaondansodasuperodnsaondansoda",
+            "email":    "bob@bob.com",
+            "password": "super12324jhklafsdjhflkjweyruasdljkfhasdldfjkhasdkljhrleqwwjkrhlqwejrhasdflkjhasdf",
         })
         assert.NoError(t, err)
 
@@ -155,14 +158,15 @@ func TestSignup(t *testing.T) {
         assert.Equal(t, 400, rr.Code)
         mockUserService.AssertNotCalled(t, "Signup")
     })
-    t.Run("Error calling UserService", func(t *testing.T) {
+
+    t.Run("Error returned from UserService", func(t *testing.T) {
         u := &model.User{
             Email:    "bob@bob.com",
             Password: "avalidpassword",
         }
 
         mockUserService := new(mocks.MockUserService)
-        mockUserService.On("Signup", mock.AnythingOfType("*gin.Context"), u).Return(errors.NewConflict("User Already Exists", u.Email))
+        mockUserService.On("Signup", mock.AnythingOfType("*context.emptyCtx"), u).Return(errors.NewConflict("User Already Exists", u.Email))
 
         // a response recorder for getting written http response
         rr := httptest.NewRecorder()
@@ -193,6 +197,7 @@ func TestSignup(t *testing.T) {
         assert.Equal(t, 409, rr.Code)
         mockUserService.AssertExpectations(t)
     })
+
     t.Run("Successful Token Creation", func(t *testing.T) {
         u := &model.User{
             Email:    "bob@bob.com",
@@ -208,10 +213,10 @@ func TestSignup(t *testing.T) {
         mockTokenService := new(mocks.MockTokenService)
 
         mockUserService.
-            On("Signup", mock.AnythingOfType("*gin.Context"), u).
+            On("Signup", mock.AnythingOfType("*context.emptyCtx"), u).
             Return(nil)
         mockTokenService.
-            On("NewPairFromUser", mock.AnythingOfType("*gin.Context"), u, "").
+            On("NewPairFromUser", mock.AnythingOfType("*context.emptyCtx"), u, "").
             Return(mockTokenResp, nil)
 
         // a response recorder for getting written http response
@@ -252,6 +257,7 @@ func TestSignup(t *testing.T) {
         mockUserService.AssertExpectations(t)
         mockTokenService.AssertExpectations(t)
     })
+
     t.Run("Failed Token Creation", func(t *testing.T) {
         u := &model.User{
             Email:    "bob@bob.com",
@@ -264,10 +270,10 @@ func TestSignup(t *testing.T) {
         mockTokenService := new(mocks.MockTokenService)
 
         mockUserService.
-            On("Signup", mock.AnythingOfType("*gin.Context"), u).
+            On("Signup", mock.AnythingOfType("*context.emptyCtx"), u).
             Return(nil)
         mockTokenService.
-            On("NewPairFromUser", mock.AnythingOfType("*gin.Context"), u, "").
+            On("NewPairFromUser", mock.AnythingOfType("*context.emptyCtx"), u, "").
             Return(nil, mockErrorResponse)
 
         // a response recorder for getting written http response

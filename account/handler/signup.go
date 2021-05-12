@@ -24,13 +24,15 @@ func (h *Handler) Signup(c *gin.Context) {
         Email:    req.Email,
         Password: req.Password,
     }
-    err := h.UserService.Signup(c, u)
+    ctx := c.Request.Context()
+
+    err := h.UserService.Signup(ctx, u)
     if err != nil {
         log.Printf("Failed to signup user: %v\n", err.Error())
         c.JSON(errors.Status(err), gin.H{"error": err})
         return
     }
-    tokens, err := h.TokenService.NewPairFromUser(c, u, "")
+    tokens, err := h.TokenService.NewPairFromUser(ctx, u, "")
     if err != nil {
         c.JSON(errors.Status(err), gin.H{
             "error": err,

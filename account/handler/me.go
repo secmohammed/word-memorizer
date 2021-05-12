@@ -16,6 +16,7 @@ type authHeader struct {
 // Me handler fetches user from ID token
 // so that user can be verified by the server and returned
 func (h *Handler) Me(c *gin.Context) {
+
     // A *model.User will eventually be added to context in middleware
     user, exists := c.Get("user")
 
@@ -34,7 +35,8 @@ func (h *Handler) Me(c *gin.Context) {
     }
 
     uid := user.(*model.User).UID
-    u, err := h.UserService.Get(c, uid)
+    ctx := c.Request.Context()
+    u, err := h.UserService.Get(ctx, uid)
     if err != nil {
         log.Printf("Unable to find user: %v\n%v", uid, err)
         e := errors.NewNotFound("user", uid.String())

@@ -2,7 +2,6 @@ package handler
 
 import (
     "net/http"
-    "os"
 
     "github.com/gin-gonic/gin"
     "github.com/secmohammed/word-memorizer/account/model"
@@ -17,6 +16,7 @@ type Config struct {
     R            *gin.Engine
     UserService  model.UserService
     TokenService model.TokenService
+    BaseURL      string
 }
 
 func NewHandler(c *Config) {
@@ -25,7 +25,7 @@ func NewHandler(c *Config) {
         TokenService: c.TokenService,
     }
 
-    g := c.R.Group(os.Getenv("ACCOUNT_API_URL"))
+    g := c.R.Group(c.BaseURL)
     g.GET("/me", h.Me)
     g.POST("/signup", h.Signup)
     g.POST("/signout", h.Signout)
