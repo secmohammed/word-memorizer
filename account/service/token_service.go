@@ -13,7 +13,7 @@ import (
 // for use in service methods along with keys and secrets for
 // signing JWTs
 type tokenService struct {
-    // TokenRepository model.TokenRepository
+    TokenRepository       model.TokenRepository
     PrivKey               *rsa.PrivateKey
     PubKey                *rsa.PublicKey
     RefreshSecret         string
@@ -22,6 +22,7 @@ type tokenService struct {
 }
 
 type TokenServiceConfig struct {
+    TokenRepository       model.TokenRepository
     PrivKey               *rsa.PrivateKey
     PubKey                *rsa.PublicKey
     RefreshSecret         string
@@ -33,6 +34,7 @@ type TokenServiceConfig struct {
 // initializing a UserService with its repository layer dependencies
 func NewTokenService(c *TokenServiceConfig) model.TokenService {
     return &tokenService{
+        TokenRepository:       c.TokenRepository,
         PrivKey:               c.PrivKey,
         PubKey:                c.PubKey,
         RefreshSecret:         c.RefreshSecret,
@@ -58,7 +60,17 @@ func (s *tokenService) NewPairFromUser(ctx context.Context, u *model.User, prevT
         return nil, errors.NewInternal()
     }
 
-    // TODO: store refresh tokens by calling TokenRepository methods
+    if err := s.TokenRepository.SetRefreshToken(ctx, u.UID.String(), refreshToken.ID, refreshToken.ExpiresIn); err != nil {
+        log.Printf("Error storing tokenID for uid: %v. Error: %v\n", u.UID, err.Error())
+        return nil, errors.NewInternal()
+    }
+
+    // delete user's current refresh token (used when refreshing idToken)
+    if prevTokenID != "" {
+        if err := s.TokenRepository.DeleteRefreshToken(ctx, u.UID.String(), prevTokenID); err != nil {
+            log.Printf("Could not delete previous refreshToken for uid: %v, tokenID: %v\n", u.UID.String(), prevTokenID)
+        }
+    }
 
     return &model.TokenPair{
         IDToken:      idToken,
