@@ -43,12 +43,6 @@ func NewHandler(c *Config) {
     g.PUT("/details", h.Details)
 }
 
-func (h *Handler) Signin(c *gin.Context) {
-    // time.Sleep(6 * time.Second)
-    c.JSON(http.StatusOK, gin.H{
-        "hello": "spacce persons",
-    })
-}
 func (h *Handler) Signout(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "hello": "spacce persons",
