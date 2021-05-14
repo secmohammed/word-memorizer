@@ -16,7 +16,6 @@ type authHeader struct {
 // Me handler fetches user from ID token
 // so that user can be verified by the server and returned
 func (h *Handler) Me(c *gin.Context) {
-
     // A *model.User will eventually be added to context in middleware
     user, exists := c.Get("user")
 

@@ -19,6 +19,7 @@ type UserService interface {
 //any service it interacts with to implement
 type TokenService interface {
     NewPairFromUser(ctx context.Context, u *User, prevTokenID string) (*TokenPair, error)
+    ValidateIDToken(tokenString string) (*User, error)
 }
 
 //UserRepository defines methodds the service lay expects
