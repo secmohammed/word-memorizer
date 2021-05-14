@@ -26,7 +26,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
      * repository layer
      */
     userRepository := repository.NewUserRepository(d.DB)
-
+    tokenRepository := repository.NewTokenRepository(d.RedisClient)
     /*
      * repository layer
      */
@@ -76,6 +76,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
         return nil, fmt.Errorf("could not parse REFRESH_TOKEN_EXP as int: %w", err)
     }
     tokenService := service.NewTokenService(&service.TokenServiceConfig{
+        TokenRepository:       tokenRepository,
         PrivKey:               privKey,
         PubKey:                pubKey,
         RefreshSecret:         refreshSecret,

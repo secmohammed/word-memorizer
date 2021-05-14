@@ -44,22 +44,19 @@ func NewTokenService(c *TokenServiceConfig) model.TokenService {
 }
 
 func (s *tokenService) NewPairFromUser(ctx context.Context, u *model.User, prevTokenID string) (*model.TokenPair, error) {
-
     // No need to use a repository for idToken as it is unrelated to any data source
     idToken, err := generateIDToken(u, s.PrivKey, s.IDExpirationSecs)
-
     if err != nil {
         log.Printf("Error generating idToken for uid: %v. Error: %v\n", u.UID, err.Error())
         return nil, errors.NewInternal()
     }
 
     refreshToken, err := generateRefreshToken(u.UID, s.RefreshSecret, s.RefreshExpirationSecs)
-
     if err != nil {
         log.Printf("Error generating refreshToken for uid: %v. Error: %v\n", u.UID, err.Error())
         return nil, errors.NewInternal()
     }
-
+    // set freshly minted refresh token to valid list
     if err := s.TokenRepository.SetRefreshToken(ctx, u.UID.String(), refreshToken.ID, refreshToken.ExpiresIn); err != nil {
         log.Printf("Error storing tokenID for uid: %v. Error: %v\n", u.UID, err.Error())
         return nil, errors.NewInternal()
@@ -71,7 +68,6 @@ func (s *tokenService) NewPairFromUser(ctx context.Context, u *model.User, prevT
             log.Printf("Could not delete previous refreshToken for uid: %v, tokenID: %v\n", u.UID.String(), prevTokenID)
         }
     }
-
     return &model.TokenPair{
         IDToken:      idToken,
         RefreshToken: refreshToken.SS,

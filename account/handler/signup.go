@@ -34,6 +34,8 @@ func (h *Handler) Signup(c *gin.Context) {
     }
     tokens, err := h.TokenService.NewPairFromUser(ctx, u, "")
     if err != nil {
+        log.Printf("Failed to create tokens for user: %v\n", err.Error())
+
         c.JSON(errors.Status(err), gin.H{
             "error": err,
         })
