@@ -11,6 +11,23 @@ type MockTokenService struct {
     mock.Mock
 }
 
+// ValidateRefreshToken mocks concrete ValidateRefreshToken
+func (m *MockTokenService) ValidateRefreshToken(refreshTokenString string) (*model.RefreshToken, error) {
+    ret := m.Called(refreshTokenString)
+
+    var r0 *model.RefreshToken
+    if ret.Get(0) != nil {
+        r0 = ret.Get(0).(*model.RefreshToken)
+    }
+
+    var r1 error
+
+    if ret.Get(1) != nil {
+        r1 = ret.Get(1).(error)
+    }
+
+    return r0, r1
+}
 func (m *MockTokenService) NewPairFromUser(ctx context.Context, u *model.User, prevTokenID string) (*model.TokenPair, error) {
     ret := m.Called(ctx, u, prevTokenID)
     var r0 *model.TokenPair
