@@ -120,3 +120,62 @@ func TestSignup(t *testing.T) {
         mockUserRepository.AssertExpectations(t)
     })
 }
+func TestUpdateDetails(t *testing.T) {
+    mockUserRepository := new(mocks.MockUserRepository)
+    us := NewUserService(&UserServiceConfig{
+        UserRepository: mockUserRepository,
+    })
+
+    t.Run("Success", func(t *testing.T) {
+        uid, _ := uuid.NewRandom()
+
+        mockUser := &model.User{
+            UID:     uid,
+            Email:   "new@bob.com",
+            Website: "https://jacobgoodwin.me",
+            Name:    "A New Bob!",
+        }
+
+        mockArgs := mock.Arguments{
+            mock.AnythingOfType("*context.emptyCtx"),
+            mockUser,
+        }
+
+        mockUserRepository.
+            On("Update", mockArgs...).Return(nil)
+
+        ctx := context.TODO()
+        err := us.UpdateDetails(ctx, mockUser)
+
+        assert.NoError(t, err)
+        mockUserRepository.AssertCalled(t, "Update", mockArgs...)
+    })
+
+    t.Run("Failure", func(t *testing.T) {
+        uid, _ := uuid.NewRandom()
+
+        mockUser := &model.User{
+            UID: uid,
+        }
+
+        mockArgs := mock.Arguments{
+            mock.AnythingOfType("*context.emptyCtx"),
+            mockUser,
+        }
+
+        mockError := errors.NewInternal()
+
+        mockUserRepository.
+            On("Update", mockArgs...).Return(mockError)
+
+        ctx := context.TODO()
+        err := us.UpdateDetails(ctx, mockUser)
+        assert.Error(t, err)
+
+        apperror, ok := err.(*errors.Error)
+        assert.True(t, ok)
+        assert.Equal(t, errors.Internal, apperror.Type)
+
+        mockUserRepository.AssertCalled(t, "Update", mockArgs...)
+    })
+}

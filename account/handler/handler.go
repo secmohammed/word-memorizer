@@ -46,7 +46,6 @@ func NewHandler(c *Config) {
     g.POST("/tokens", h.Tokens)
     g.POST("/image", h.Image)
     g.DELETE("/image", h.DeleteImage)
-    g.PUT("/details", h.Details)
 }
 
 func (h *Handler) Image(c *gin.Context) {
