@@ -12,16 +12,19 @@ import (
 // userService acts as a struct for injecting an implementation of UserRepository
 // for use in service methods
 type userService struct {
-    UserRepository model.UserRepository
+    UserRepository  model.UserRepository
+    ImageRepository model.ImageRepository
 }
 
 type UserServiceConfig struct {
-    UserRepository model.UserRepository
+    UserRepository  model.UserRepository
+    ImageRepository model.ImageRepository
 }
 
 func NewUserService(c *UserServiceConfig) model.UserService {
     return &userService{
-        UserRepository: c.UserRepository,
+        UserRepository:  c.UserRepository,
+        ImageRepository: c.ImageRepository,
     }
 }
 
