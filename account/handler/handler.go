@@ -33,13 +33,13 @@ func NewHandler(c *Config) {
     if gin.Mode() != gin.TestMode {
         g.Use(middleware.Timeout(c.TimeoutDuration, errors.NewServiceUnavailable()))
         g.GET("/me", middleware.AuthUser(h.TokenService), h.Me)
+        g.POST("/signout", middleware.AuthUser(h.TokenService), h.Signout)
     } else {
         g.GET("/me", h.Me)
-
+        g.POST("/signout", h.Signout)
     }
 
     g.POST("/signup", h.Signup)
-    g.POST("/signout", h.Signout)
     g.POST("/signin", h.Signin)
     g.POST("/tokens", h.Tokens)
     g.POST("/image", h.Image)
@@ -47,11 +47,6 @@ func NewHandler(c *Config) {
     g.PUT("/details", h.Details)
 }
 
-func (h *Handler) Signout(c *gin.Context) {
-    c.JSON(http.StatusOK, gin.H{
-        "hello": "spacce persons",
-    })
-}
 func (h *Handler) Image(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "hello": "spacce persons",

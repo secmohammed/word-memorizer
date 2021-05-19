@@ -118,3 +118,8 @@ func (s *tokenService) ValidateRefreshToken(tokenString string) (*model.RefreshT
         UID: claims.UID,
     }, nil
 }
+
+// Signout reaches out to the repository layer to delete all valid tokens for a user
+func (s *tokenService) Signout(ctx context.Context, uid uuid.UUID) error {
+    return s.TokenRepository.DeleteUserRefreshTokens(ctx, uid.String())
+}
