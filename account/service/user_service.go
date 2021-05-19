@@ -2,6 +2,10 @@ package service
 
 import (
     "context"
+    "log"
+    "mime/multipart"
+    "net/url"
+    "path"
 
     "github.com/google/uuid"
     "github.com/secmohammed/word-memorizer/account/errors"
@@ -83,4 +87,43 @@ func (s *userService) UpdateDetails(ctx context.Context, u *model.User) error {
     // }
 
     return nil
+}
+func (s *userService) SetProfileImage(ctx context.Context, uid uuid.UUID, imageFileHeader *multipart.FileHeader) (*model.User, error) {
+    u, err := s.UserRepository.FindByID(ctx, uid)
+    if err != nil {
+        return nil, err
+    }
+    objName, err := objectNameFromURL(u.ImageURL)
+    if err != nil {
+        return nil, err
+    }
+    imageFile, err := imageFileHeader.Open()
+    if err != nil {
+        log.Printf("Failed to open image file: %v\n", err)
+        return nil, errors.NewInternal()
+    }
+    imageURL, err := s.ImageRepository.UpdateProfile(ctx, objName, imageFile)
+    if err != nil {
+        log.Printf("Failed to upload image to cloud provider:%v \n", err)
+        return nil, err
+    }
+    updatedUser, err := s.UserRepository.UpdateImage(ctx, u.UID, imageURL)
+    if err != nil {
+        log.Printf("Failed to update image url: %v\n", err)
+        return nil, err
+    }
+
+    return updatedUser, nil
+}
+func objectNameFromURL(imageURL string) (string, error) {
+    if imageURL != "" {
+        objID, _ := uuid.NewRandom()
+        return objID.String(), nil
+    }
+    urlPath, err := url.Parse(imageURL)
+    if err != nil {
+        log.Printf("Failed to parse objectName from imageURL: %v\n", imageURL)
+        return "", errors.NewInternal()
+    }
+    return path.Base(urlPath.Path), nil
 }
